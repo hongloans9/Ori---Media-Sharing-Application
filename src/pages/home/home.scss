@@ -2,9 +2,40 @@
 
 
 page-home {
-
+    
+}
+#app-name{
+    font-family: $title;
+    
 }
 
 ion-icon {
     font-size: 20px; //Preferred size here
+
+.title {
+        margin-left: 5px;
+        margin-bottom: -5px;
+        font-family: $text;
+        color: color($colors, dark);
+        font-size: 22px;
+    }
+#author {
+        font-size: 16px;
+        color: color($colors, grey1);
+        margin-bottom: 5px;
+        margin-left: 5px;
+        font-family: $text;
+
+    }
+ion-row {
+    margin: 5px 0;
+    font-size: 16px;
+    font-family: $text;
+    color: color($colors, dark);
+    }
+ion-icon{
+    font-size: 23px;
+    color: color($colors, secondary);
+    padding-right: 4px;
+}
 }
