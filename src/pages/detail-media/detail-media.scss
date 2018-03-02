@@ -1,7 +1,45 @@
+@import "../../theme/variables";
+
 page-detail-media {
+    font-family: $text;
 
+    #title {
+        margin-top: 2px;
+        margin-bottom: 5px;
+    }
+    #author {
+        color: color($colors, dark);
+    }
+   .desciption {
+        font-size: 13px;
+        color: color($colors, dark);
+   }
+    ion-item {
+        padding-bottom: -5px;
+    }
+   
+    .wrap-like {
+        position: relative;
+         #btn-like {
+             position: absolute;
+             left: 1px;
+        }
+    }
+    #txt-like {
+        font-size: 15px;
+        color: color($colors, dark);
+        font-weight: 600;
+        position: absolute;
+        top: -4px;
+        left: 41px;
+    }
+    #time {
+        font-size: 13px;
+        font-weight: 500;
+        color: color($colors, grey1);
+    }
+    .wrap-des {
+        margin-top: -5px;
+    }
 }
 
-ion-icon {
-    font-size: 40px; //Preferred size here
-}

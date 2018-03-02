@@ -1,29 +1,72 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>Ori</ion-title>
-  </ion-navbar>
+  <ion-toolbar>
+    <ion-title id="app-name" (click)="scrollToTop()">Ori</ion-title>
+    <ion-title *ngIf="showPopular == false"> Recent Post </ion-title>
+    <ion-title *ngIf="showPopular == true"> 20 Popular Posts </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="toggle()">
+        <ion-icon  name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+ 
+    <ion-buttons start>
+      <button ion-button icon-only  (click)="onFilter()">
+        <ion-icon ios="ios-funnel-outline" md="md-funnel"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
+  <ion-searchbar
+    (search)="onSearchEnter()"
+    *ngIf="toggled == true"
+    [(ngModel)]="myInput"
+    [showCancelButton]="shouldShowCancel"
+    (ionInput)="onInputSearch(myInput)"
+    (ionCancel)="onCancel()">
+  </ion-searchbar> 
+
+  <ion-list *ngIf="toggled == true">
+      <ion-item *ngFor="let item of searchArray" (click)="openDetailMedia(item.file_id, item.user_id)">
+          {{item.title}}
+      </ion-item>
+  </ion-list>  
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
   <ion-card *ngFor="let media of medias">
     <ion-card-title>
-      <h1>{{media.title}}</h1>
+      <h1 id="title" (click)="openDetailMedia(media.file_id, media.user_id)">{{media.title}}</h1>
     </ion-card-title>
-    <p>By {{media.username}}</p>
-    <img *ngIf="media.media_type == 'image'" [src]="mediaProvider.mediaUrl + media.filename" [alt]="media.title" (click)="openDetailMedia(media.file_id,media.user_id)">
-    <video *ngIf="media.media_type == 'video'" (click)="openDetailMedia(media.file_id,media.user_id)" controls>
-      <source  [src]="mediaProvider.mediaUrl + media.filename" type="video/mp4" alt="media.title" >    
-      <source  [src]="mediaProvider.mediaUrl + media.filename" type="video/ogg" alt="media.title" >     
+    <ion-icon id="btn-save" (click)="savePost(media)" ios="ios-bookmark-outline" md="md-bookmark"></ion-icon>
+
+    <p id="author" (click)="openOtherUser(media.user_id)">By {{media.username}}</p>
+    <img *ngIf="media.media_type == 'image'" [src]="mediaProvider.mediaUrl + media.filename" [alt]="media.title" (click)="openDetailMedia(media.file_id, media.user_id)">
+
+    <video *ngIf="media.media_type == 'video'" width="100%" height="240px" controls>
+      <source [src]="mediaProvider.mediaUrl + media.filename" type="video/mp4" alt="media.title">
+      <source [src]="mediaProvider.mediaUrl + media.filename" type="video/ogg" alt="media.title">
     </video>
-    <ion-row>
-      <ion-col>
+    <ion-row >
+      <ion-col (click)="clickLike(media.file_id)">
+        <button id="btn-like" ion-button clear small icon-start>
         <ion-icon name="heart"></ion-icon>
-        <p>{{media.numberOfLike}} Like</p>
+        {{media.numberOfLike}} Like
+        </button>
       </ion-col>
-      <ion-col>
+      <ion-col (click)="openComment(media.file_id, media.username, media.title, media.description)">
+        <button id="btn-comment" ion-button clear small icon-start >
         <ion-icon name="text"></ion-icon>
-        <p>{{media.numberOfComment}} Comment</p>
+        {{media.numberOfComment}} Comment
+        </button>
       </ion-col>
     </ion-row>
   </ion-card>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" threshold="200px">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more post...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

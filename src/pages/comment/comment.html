@@ -1,0 +1,37 @@
+<!--
+  Generated template for the CommentPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Comments</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list>
+    <ion-list-header text-wrap>
+      <h2 id="title">{{title}}</h2>
+      <p class="wrap-des">
+        <span id="author">{{username}}</span> {{description}}
+      </p>
+    </ion-list-header>
+    <ion-item no-lines text-wrap *ngFor="let comment of comments">
+      <p class="wrap-cmt">
+        <span id="author-cmt" (click)="openOtherUser(comment.user_id)">{{comment.username}}</span> {{comment.comment}}
+      </p>
+      <ion-icon *ngIf="comment.user_id == my_id" (click)="deleteComment(comment.comment_id, comment)" id="delete" name="close-circle" item-end></ion-icon>
+    </ion-item>
+  </ion-list>
+  <form #commentForm="ngForm">
+    <ion-card>
+          <ion-textarea float-left class="new-cmt" name="comment" [(ngModel)]="newComment" placeholder="Comment..." required></ion-textarea>
+          <button ion-button round float-right text-capitalize class="submit-btn" type="submit" (click)="postComment()" [disabled]="!commentForm.form.valid">Post</button>  
+    </ion-card>
+  </form>
+</ion-content>

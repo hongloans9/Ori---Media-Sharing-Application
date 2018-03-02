@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { MediaComponent } from './media/media';
 @NgModule({
-	declarations: [MediaComponent],
+	declarations: [],
 	imports: [],
-	exports: [MediaComponent]
+	exports: []
 })
 export class ComponentsModule {}

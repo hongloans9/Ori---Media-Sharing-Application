@@ -47,16 +47,33 @@ $colors: (
 // --------------------------------------------------
 // iOS only Sass variables can go here
 
-
-
-
+$toolbar-ios-title-text-color: white;
+$toolbar-ios-button-color: white;
+$toolbar-ios-title-font-weight: 500;
+$tabs-ios-tab-color-active: color($colors, secondary);
+$tabs-ios-border-color: color($colors, secondary);
+$segment-button-ios-text-color: color($colors, dark);
+$segment-button-ios-background-color-activated: color($colors, light);
+$segment-button-ios-toolbar-button-max-width: 150px;
+$tabs-ios-tab-color-active: white;
+$tabs-ios-tab-color-inactive: color($colors, dark);
+$toolbar-ios-button-font-size: 13px;
+$tabs-ios-tab-icon-size: 25px;
+$tabs-ios-tab-min-height: 40px;	
+		
 // App Material Design Variables
 // --------------------------------------------------
 // Material Design only Sass variables can go here
 
 $toolbar-md-background:  color($colors, primary);
-$tabs-md-background:  color($colors, primary);
 $tabs-md-tab-color-active: white;
+$menu-width: calc(100% - 120px);
+$toolbar-md-height: 12px;
+$toolbar-md-active-color: white;
+$tabs-md-tab-min-height: 45px;
+$tabs-md-tab-icon-size: 20px;
+$tabs-md-tab-text-margin-top: -2px;
+
 
 
 // App Windows Variables

@@ -10,44 +10,60 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class MediaProvider {
 
+  reload: boolean = false;
+  reloadProfile: boolean = false;
+  saved: any = [];
   baseUrl = 'http://media.mw.metropolia.fi/wbma/';
   mediaUrl = 'http://media.mw.metropolia.fi/wbma/uploads/';
 
 
   constructor(public http: HttpClient) {
-    console.log('Hello MediaProvider Provider');
   }
 
-
-  public uploadFile(media){
+  postTag(tag) {
     const settings = {
       headers: new HttpHeaders().set('x-access-token', localStorage.getItem('token')),
     };
-    console.log(settings);
-    console.log(this.http.post(this.baseUrl + 'media', media, settings));
+    return this.http.post(this.baseUrl + 'tags', tag, settings);
+  }
+
+  uploadFile(media) {
+    const settings = {
+      headers: new HttpHeaders().set('x-access-token', localStorage.getItem('token')),
+    };
     return this.http.post(this.baseUrl + 'media', media, settings);
   }
 
-  postLike(like){
-    console.log(like);
+  postLike(like) {
     const settings = {
       headers: new HttpHeaders().set('x-access-token', localStorage.getItem('token')),
     };
-    console.log(this.http.post('http://media.mw.metropolia.fi/wbma/favourites', like, settings));
-    return this.http.post( 'http://media.mw.metropolia.fi/wbma/favourites', like, settings);
+    return this.http.post(this.baseUrl + 'favourites', like, settings);
   }
 
-  postComment(comment){
-    console.log(comment);
+  deleteLike(id) {
     const settings = {
       headers: new HttpHeaders().set('x-access-token', localStorage.getItem('token')),
     };
-    console.log(this.http.post('http://media.mw.metropolia.fi/wbma/comments', comment, settings));
-    return this.http.post( 'http://media.mw.metropolia.fi/wbma/comments', comment, settings);
+    return this.http.delete(this.baseUrl + 'favourites/file/' + id, settings);
   }
 
-  getAllMedia() {
-    return this.http.get(this.baseUrl + 'media');
+  postComment(comment) {
+    const settings = {
+      headers: new HttpHeaders().set('x-access-token', localStorage.getItem('token')),
+    };
+    return this.http.post(this.baseUrl + 'comments', comment, settings);
+  }
+
+  deleteComment(id){
+    const settings = {
+      headers: new HttpHeaders().set('x-access-token', localStorage.getItem('token')),
+    };
+    return this.http.delete(this.baseUrl + 'comments/' + id, settings);
+  }
+
+  getAllMedia(end) {
+    return this.http.get(this.baseUrl + 'media?start=0&limit='+ end);
   }
 
   getMediaById(id) {
@@ -61,19 +77,19 @@ export class MediaProvider {
     return this.http.delete(this.baseUrl + 'media/' + fileId, settings)
   }
 
-  getUserInfo(userId) {
-    const settings = {
-      headers: new HttpHeaders().set('x-access-token', localStorage.getItem('token'))
-    };
-    return this.http.get(this.baseUrl + 'users/' + userId, settings);
-  }
-
   getComment(fileId) {
     return this.http.get(this.baseUrl + 'comments/file/' + fileId);
   }
 
   getLike(fileId) {
     return this.http.get(this.baseUrl + 'favourites/file/' + fileId);
+  }
+
+  postSearch(search){
+    const settings = {
+      headers: new HttpHeaders().set('x-access-token', localStorage.getItem('token')),
+    };
+    return this.http.post(this.baseUrl + 'media/search/', search, settings);
 
   }
 

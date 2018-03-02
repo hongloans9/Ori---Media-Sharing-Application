@@ -6,34 +6,47 @@
 -->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>upload-media</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+        <ion-title>Ori</ion-title>
+    </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-    <form>
-        <ion-item>
-            <ion-input type="file" placeholder="Upload a file" name="file" (change)="setFile($event)"></ion-input>
-        </ion-item>
-      
-      <ion-card>
-          <ion-item>
-              <ion-input [(ngModel)]="media.title" type="text" name="title" placeholder="Title"></ion-input>            
-          </ion-item>
-      </ion-card>                  
-      <ion-card>
-          <ion-item>
-              <ion-textarea [(ngModel)]="media.description" name="description" placeholder="Description"></ion-textarea>            
-          </ion-item>
-      </ion-card>              
-                            
-          <button ion-button type="submit" (click)="startUpload()" style="height:30px;width:70px">Upload</button>
-            
-      
-    </form>
+    <ion-grid>
+        <form #uploadForm="ngForm">
 
-    <p class="text">Response: {{message}}</p>
+            <button ion-button icon-left class="photo-btn" *ngIf="!mediaData" (click)="takePicture()">
+                    <ion-icon name="camera"></ion-icon>Take a Photo</button>
+            <img *ngIf="mediaData" id="img-preview" [src]="mediaData" (click)="takePicture()">
+            <ion-row *ngIf="!mediaData">
+                <button ion-button icon-left class="input-file" (click)="file.click()">
+                    <ion-icon name="photos"></ion-icon>Choose File
+                </button>
+                <p class="fileName">{{fileName}}</p>
+                <input #file hidden type="file" placeholder="Upload a file" name="file" accept="image/*|video/*" (change)="setFile($event)"
+                    ngModel>
+            </ion-row>
+
+            <ion-row>
+                <ion-item>
+                    <ion-input class="input-title" [(ngModel)]="media.title" type="text" name="title" placeholder="Title" required></ion-input>
+                </ion-item>
+            </ion-row>
+            <ion-row>
+                <ion-item>
+                    <ion-textarea class="input-description" [(ngModel)]="media.description" name="description" placeholder="Description (optional)"></ion-textarea>
+                </ion-item>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <button ion-button round full class="submit-btn" type="submit" (click)="startUpload()" [disabled]="!uploadForm.valid">Upload</button>
+                </ion-col>
+                <ion-col>
+                    <button ion-button round full class="cancel-btn" (click)="cancel()">Cancel</button>
+                </ion-col>
+            </ion-row>
+        </form>
+    </ion-grid>
 </ion-content>

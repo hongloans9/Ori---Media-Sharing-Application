@@ -1,12 +1,11 @@
+import { CommentPage } from './../comment/comment';
+import { UserProvider } from './../../providers/user/user';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MediaProvider } from './../../providers/media/media';
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { Like } from '../../app/models/like';
+import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { ViewChild } from '@angular/core';
 import { Navbar } from 'ionic-angular';
-import { HomePage } from '../home/home';
-import { Comment } from '../../app/models/comment';
 
 /**
  * Generated class for the DetailMediaPage page.
@@ -22,119 +21,128 @@ import { Comment } from '../../app/models/comment';
 export class DetailMediaPage {
   @ViewChild(Navbar) navBar: Navbar;
 
-  public id;
-         userId;
-
-  like: Like = {file_id: 0};
-  createComment: Comment = {file_id: 0, comment:''};
-
+  id;
+  userId;
+  myId;
   commentArr: any = [];
   likeArr: any = [];
   numberOfComment: any;
   numberOfLike: any;
   url: string;
   title: string;
-  descrpt: any;
-  uName: any;
+  description: any;
+  username: any;
+  time;
   likeUsers: any = [];
-  commentUsers: any = [];
-  type:any;    
+  type: any;
+  likePost: string = "heart-outline";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private mediaProvider: MediaProvider) {
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    private mediaProvider: MediaProvider,
+    private userProvider: UserProvider,
+    private alertCtrl: AlertController) {
+
     this.id = navParams.get('mediaId');
     this.userId = navParams.get('userId');
-    console.log(this.id, this.userId);
-    this.getNumberOfComment();
-    this.getNumberOfLike();  
   }
 
   ionViewDidLoad() {
     this.mediaProvider.getMediaById(this.navParams.get('mediaId')).
       subscribe(response => {
-        console.log(response);
         this.url = this.mediaProvider.mediaUrl + response['filename'];
         this.title = response['title'];
-        this.descrpt = response['description'];
+        this.description = response['description'];
         this.type = response['media_type'];
-        console.log(this.type);
+        this.time = response['time_added'];
       }, (error: HttpErrorResponse) => {
         console.log(error);
       });
-
-      this.mediaProvider.getUserInfo(this.userId).subscribe(res => {
-        this.uName = res['username'];
-        console.log(this.uName);
-      });
-
-      this.navBar.backButtonClick = (e:UIEvent)=>{
-        // todo something
-        this.navCtrl.push(HomePage);
-       }
-  }
-
-  callComment(){
-    this.createComment.file_id = Number(this.id);
-    console.log(this.createComment);
-    this.mediaProvider.postComment(this.createComment).subscribe(data => {
-      console.log(data)
-      this.getNumberOfComment();
+    this.userProvider.getAllUserInfo(this.userId).subscribe(res => {
+      this.username = res['username'];
     });
+    this.getNumberOfLike();
+    this.myId = this.userProvider.my_id;
   }
-  
 
-  getNumberOfComment() {    
-      this.mediaProvider.getComment(this.id).subscribe(res => {
-        console.log(res);
-        this.commentUsers = [];
-        this.commentArr = res;        
-        this.numberOfComment = this.commentArr.length;
-        for(var i = 0; i< (this.numberOfComment); i++ ){
-          this.commentUsers.push(res[i]['comment']);
-        }
-        console.log(this.numberOfComment, res, this.commentUsers);
-      });
-      
-    
+  ionViewWillEnter() {
+    this.getNumberOfComment();
+  }
+
+  getNumberOfComment() {
+    this.mediaProvider.getComment(this.id).subscribe(res => {
+      this.commentArr = res;
+      this.numberOfComment = this.commentArr.length;
+    });
   }
 
   getNumberOfLike() {
-      this.mediaProvider.getLike(this.id).subscribe(data => {
-        console.log(data);
-        this.likeArr = data;
-        this.likeUsers = [];
-        this.numberOfLike = this.likeArr.length;
-        
-        for(var i = 0; i< (this.numberOfLike); i++ ){
-          this.mediaProvider.getUserInfo(data[i]['user_id']).subscribe(data =>{            
-            this.likeUsers.push(data['username']);
-            console.log(this.likeUsers);
-          });        
-        }                
-        console.log(this.numberOfLike, data, this.likeUsers);        
-      });    
+    this.mediaProvider.getLike(this.id).subscribe(data => {
+      this.likeArr = data;
+      this.likeUsers = [];
+      this.numberOfLike = this.likeArr.length;
+
+      for (var i = 0; i < (this.numberOfLike); i++) {
+        this.userProvider.getAllUserInfo(data[i]['user_id']).subscribe(data => {
+          this.likeUsers.push(data['username']);
+        });
+      }
+    });
   }
 
-  clickLike(){
-    this.like.file_id = Number(this.id);
-    console.log(this.like);
-    this.mediaProvider.postLike(this.like).subscribe(data => {
-      console.log(data);
+  clickLike() {
+     const like = {
+      file_id: this.id
+    };
+    this.mediaProvider.postLike(like).subscribe(response => {
       this.getNumberOfLike();
-    })
+      this.likePost = "heart";
+    }, (error: HttpErrorResponse) => {
+      if (error['statusText'] == 'Bad Request') {
+        this.mediaProvider.deleteLike(this.id).subscribe(Response => {
+          this.getNumberOfLike();
+          this.likePost = "heart-outline";
+        })
+      }
+    });
   }
-  
-  public iconCommentClicked: boolean = false; //Whatever you want to initialise it as
-         CommentClicked: boolean = false;
-         likeClicked: boolean = false;
 
-  public onIconCommentClick() {    
-      this.iconCommentClicked = !this.iconCommentClicked;
+  likeClicked: boolean = false;
+
+  public onIconCommentClick() {
+    this.navCtrl.push(CommentPage, {
+      mediaId: this.id,
+      username: this.username,
+      title: this.title,
+      des: this.description
+    });
   }
-  public onCommentClick() {    
-    this.CommentClicked = !this.CommentClicked;    
-  }
-  public onLikeClick() {    
+
+  public onLikeClick() {
     this.likeClicked = !this.likeClicked;
   }
-  
+
+  deletePost() {
+    let alert = this.alertCtrl.create({
+      subTitle: 'Delete this post?',
+      buttons: [
+        {
+          text: 'Delete',
+          handler: () => {
+            this.mediaProvider.deleteMedia(this.id).subscribe(res => {
+              console.log(res['message']);
+              this.mediaProvider.reloadProfile = true;
+              this.navCtrl.pop();
+            });
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        }
+      ]
+    });
+    alert.present();
+  }
+
 }

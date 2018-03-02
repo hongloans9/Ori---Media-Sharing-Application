@@ -1,19 +1,6 @@
-@import "../../theme/variables";
+page-search {
 
-page-home {
-    
 }
-
- ion-content{
-    margin:0;
- }
-
- ion-searchbar {
-	color: rgb(175, 169, 169);
-	margin: 0 !important;
-	padding: 0;
-}
-
 
 #app-name{
     font-family: $title;
@@ -64,4 +51,3 @@ ion-row {
     font-weight: 600;
     text-transform: lowercase;
 }
->>>>>>> master

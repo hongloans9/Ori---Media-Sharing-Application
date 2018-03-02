@@ -22,7 +22,10 @@ export class SignUpPage {
   user: User = { username: '', email: '', password: '' };
   createSuccess = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private userProvider: UserProvider, private alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private userProvider: UserProvider, 
+    private alertCtrl: AlertController) {
   }
 
   ionViewDidLoad() {

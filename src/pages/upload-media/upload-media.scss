@@ -1,3 +1,60 @@
+@import "../../theme/variables";
+
 page-upload-media {
+    ion-title{
+        font-family: $title;
+    }
+    button {
+        background: linear-gradient(to left,  color($colors, secondary) ,  color($colors, primary));
+        font-family: $text;
+    }
+    ion-item {
+        font-family: $text;
+        color: color($colors, dark);
+    }
+    #img-preview {
+        margin: -10px 0 4px 0;
+    }
+    .photo-btn {
+        font-weight: 700;
+        width: 150px;
+    }
+    .input-file {
+        background: linear-gradient(to right,  color($colors, secondary) ,  color($colors, primary));
+        margin: 5px 0;
+        font-weight: 700;
+        width: 150px;
+        ion-icon {
+            color: white;
+        }
+       
+    }
+    .fileName {
+        font-family: $text;
+        margin-left: 5px;
+        font-size: 15px;
+        font-weight: 600;
+        color: color($colors, dark);
+    }
+    .input-title {
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .input-description {
+        font-size: 15px;
+        font-weight: 500;
+        height: 50px;
+       
+    }
+    .submit-btn, .cancel-btn {
+        margin-top: 15px;
+        height: 45px;
+        font-weight: 700;
+
+    }
+    .submit-btn {
+        background: linear-gradient(to right,  color($colors, secondary) ,  color($colors, primary));
+
+    }
 
 }

@@ -10,7 +10,7 @@ import { TabsPage } from '../pages/tabs/tabs';
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = LogInPage;
+  rootPage: any;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
@@ -19,5 +19,10 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
     });
+    if (localStorage.getItem('token') !== null) {
+      this.rootPage = TabsPage;
+    } else {
+      this.rootPage = LogInPage;
+    }
   }
 }
