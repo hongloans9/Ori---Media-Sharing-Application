@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { ViewChild } from '@angular/core';
 import { Navbar } from 'ionic-angular';
+import { User } from '../../app/models/user';
 
 /**
  * Generated class for the DetailMediaPage page.
@@ -36,6 +37,8 @@ export class DetailMediaPage {
   likeUsers: any = [];
   type: any;
   likePost: string = "heart-outline";
+  likeAlready = false;
+  user = User;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -78,6 +81,7 @@ export class DetailMediaPage {
 
   getNumberOfLike() {
     this.mediaProvider.getLike(this.id).subscribe(data => {
+      console.log(data);
       this.likeArr = data;
       this.likeUsers = [];
       this.numberOfLike = this.likeArr.length;
@@ -85,6 +89,10 @@ export class DetailMediaPage {
       for (var i = 0; i < (this.numberOfLike); i++) {
         this.userProvider.getAllUserInfo(data[i]['user_id']).subscribe(data => {
           this.likeUsers.push(data['username']);
+          if(data['username'] == this.user['username']){
+            this.likeAlready = true; 
+            console.log(this.likeAlready);
+          }
         });
       }
     });

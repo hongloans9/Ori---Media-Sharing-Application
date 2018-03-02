@@ -28,12 +28,13 @@
   </video>
   <ion-row>
     <ion-col>
-      <div class="wrap-like">
-        <button id="btn-like" (click)="clickLike()" ion-button clear small icon-start>
-        <ion-icon  [name]="likePost"></ion-icon>
+      <div class="wrap-like" *ngIf="!likeAlready">
+        <button id="btn-like" (click)="clickLike()" ion-button clear small icon-start>      
+        <ion-icon  [name]="likePost"></ion-icon>        
         </button>
         <p id="txt-like">{{numberOfLike}} likes </p>
       </div>
+      
     </ion-col>
     <!-- <ion-icon name="arrow-dropdown-circle" *ngIf="likeClicked" (click)="onLikeClick()">
         </ion-icon>

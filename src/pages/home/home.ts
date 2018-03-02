@@ -26,10 +26,12 @@ export class HomePage {
   numberOfLike: any;  
   mediaArray: any;
   currentUser_id;
-  end: number = 10;
+  limit: number = 10;
+  start: number = 0;
   toggled: boolean = false;
   search: Search = {title: ''};
   showPopular = false;
+  mediasLength: number = 0;
 
 
 
@@ -51,6 +53,7 @@ export class HomePage {
           console.log(error);
         });
     }
+    this.medias = [];
     this.getAllMedia(null);
   }
 
@@ -59,7 +62,7 @@ export class HomePage {
     this.getNumberOfLike(null, null);
     if (this.mediaProvider.reload) {
       this.medias = [];
-      this.end = 10;
+      this.limit = 10;
       this.getAllMedia(null);
 
       this.mediaProvider.reload = false;
@@ -70,12 +73,13 @@ export class HomePage {
     this.content.scrollToTop();
   }
   getAllMedia(callbacks: any) {
-    this.mediaProvider.getAllMedia(this.end).subscribe((data: any) => {
+    console.log(this.start, this.limit);
+    this.mediaProvider.getAllMedia(this.start, this.limit).subscribe((data: any) => {
       console.log("getAllMedia data received.");
       let likesCallback = null;
       let commentCallback = null;
       let mediaCallback = null;      
-      this.medias = data;
+      this.medias = this.medias.concat(data);      
 
       console.log(this.medias);
       // Check callback to see if the call function is done or not
@@ -92,8 +96,9 @@ export class HomePage {
       
       if (mediaCallback != null) {mediaCallback(this.medias);}
 
-      for (let user of this.medias) {
-        this.userProvider.getAllUserInfo(user.user_id).subscribe(res => {
+      for (let i = 0; i < this.medias.length; i++) {
+        console.log(this.medias[i].user_id);
+        this.userProvider.getAllUserInfo(this.medias[i].user_id).subscribe(res => {
           this.mediaArray = res;
           for (let i in this.medias) {
             if (this.medias[i].user_id == res['user_id']) {
@@ -180,18 +185,22 @@ export class HomePage {
 
   doInfinite(infiniteScroll: InfiniteScroll) {
     this.showPopular = false;
+    this.start += 10 ;
+    console.log(this.start, this.limit);
     setTimeout(() => {
-      this.end += 5;
       this.getAllMedia(null);
       infiniteScroll.complete();
-    }, 3000);
+      this.mediasLength = this.medias.length;
+      if (this.medias.length > this.mediasLength +10) {
+        infiniteScroll.enable(false);
+      }
+    }, 2000);
   }
 
   doRefresh(refresher) {
     this.showPopular = false;
     setTimeout(() => {
       this.medias = [];
-      this.end = 10;
       this.getAllMedia(null);
 
       refresher.complete();
@@ -221,11 +230,9 @@ export class HomePage {
       }
    }
 
-   this.end = 100;   
-   
-   this.getAllMedia(sortCallbacks);
-   
-    this.end = 5;
+   //this.end = 100;   
+   this.getAllMedia(sortCallbacks);   
+   //this.end = 5;
  }
 
   onInputSearch(myInput) {

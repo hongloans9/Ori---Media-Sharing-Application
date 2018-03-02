@@ -62,8 +62,8 @@ export class MediaProvider {
     return this.http.delete(this.baseUrl + 'comments/' + id, settings);
   }
 
-  getAllMedia(end) {
-    return this.http.get(this.baseUrl + 'media?start=0&limit='+ end);
+  getAllMedia(start, end) {
+    return this.http.get(this.baseUrl + 'media?start='+ start +'&limit='+ end);
   }
 
   getMediaById(id) {
